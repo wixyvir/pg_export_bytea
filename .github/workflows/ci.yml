@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  POETRY_VERSION: 1.8.5
+  PYTHON_VERSION: "3.12"
+
+jobs:
+  autopep8:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: pipx install poetry==$POETRY_VERSION
+      - run: poetry install --no-root
+      - run: poetry run autopep8 -r -d --exit-code pg_export_bytea
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: pipx install poetry==$POETRY_VERSION
+      - run: poetry install --no-root
+      - run: poetry build
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist/
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
+      - name: Start database
+        run: |
+          docker compose up -d
+          # TCP connections are only accepted once init scripts are done
+          for i in $(seq 1 60); do
+            docker compose exec -T db pg_isready -h 127.0.0.1 -U postgres && exit 0
+            sleep 2
+          done
+          docker compose logs db
+          exit 1
+      - run: pip install dist/*.whl
+      - name: Prepare checksums
+        run: |
+          mkdir -p test/
+          cd docker/init/
+          sha256sum GPU.sh > ../../test/GPU.sh.sha256sum
+          sha256sum fichier.jpg > ../../test/fichier.jpg.sha256sum
+      - name: Export files
+        env:
+          POSTGRES_PASSWORD: demo
+        run: pg_export_bytea export --host=localhost --username=postgres --dbname=postgres --output=test/ "SELECT filename, content as binary FROM test"
+      - name: Check exported files
+        working-directory: test
+        run: |
+          sha256sum -c fichier.jpg.sha256sum
+          sha256sum -c GPU.sh.sha256sum
