@@ -71,3 +71,7 @@ poetry install
 poetry shell
 
 ```
+
+## License
+
+MIT, see [LICENSE](LICENSE)

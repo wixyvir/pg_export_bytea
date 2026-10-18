@@ -2,8 +2,8 @@
 name = "pg-export-bytea"
 version = "0.1.0"
 description = "A CLI helping tool for exporting bytea fields of a PostgreSQL relation into files"
-authors = ["Ospi LYON Industrialisation <industrialisation@ospi.fr>"]
-license = "Commercial"
+authors = ["Cyprien <wixyvir@proton.me>"]
+license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
