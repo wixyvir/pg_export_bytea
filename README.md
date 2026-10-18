@@ -57,7 +57,7 @@ Use poetry pip package with `poetry build`
 
 ## Testing
 
-See Gitlab-CI file definition 
+See GitHub Actions workflow definition in `.github/workflows/ci.yml`
 
 ## Contributing
 
