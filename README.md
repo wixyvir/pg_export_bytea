@@ -18,11 +18,11 @@ Arguments:
 
 Options:
       --host[=HOST]          database server host or socket directory (default: "local socket") [default: "/var/run/postgresql/"]
-  -u, --username[=USERNAME]  database user name [default: "cyprien.diot@local.groupepsih.com"]
+  -u, --username[=USERNAME]  database user name [default: "$USER"]
   -d, --dbname[=DBNAME]      database name [default: "public"]
   -p, --port[=PORT]          database server port [default: 5432]
   -W, --prompt               prompt for password. Or use the POSTGRES_PASSWORD environment variables
-  -o, --output[=OUTPUT]      output directory path [default: "/home/cyprien.diot@local.groupepsih.com/work/cyprien.diot/pg_export_bytea"]
+  -o, --output[=OUTPUT]      output directory path [default: current working directory]
   -h, --help                 Display help for the given command. When no command is given display help for the list command.
   -q, --quiet                Do not output any message.
   -V, --version              Display this application version.
