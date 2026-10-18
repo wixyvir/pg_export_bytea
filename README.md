@@ -53,9 +53,7 @@ pg_export_bytea export --host=localhost --username=postgres -W --dbname=postgres
 
 ## Download et and setup
 
-Use RPM built from SPEC file.
-
-Or use poetry pip package with `poetry build`
+Use poetry pip package with `poetry build`
 
 ## Testing
 
